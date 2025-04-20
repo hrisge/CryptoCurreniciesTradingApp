@@ -3,6 +3,8 @@ package com.cryptotrading.controller;
 import com.cryptotrading.dto.ApplicationUserDTO;
 import com.cryptotrading.service.IApplicationUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,17 +22,32 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ApplicationUserDTO register(@RequestBody ApplicationUserDTO userDTO) {
-        return applicationUserService.register(userDTO);
+    public ResponseEntity<?> register(@RequestBody ApplicationUserDTO userDTO) {
+        try{
+            ApplicationUserDTO toReturn = applicationUserService.register(userDTO);
+            return ResponseEntity.ok(toReturn);
+        } catch(IllegalArgumentException | NullPointerException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid parameters!");
+        }
     }
 
     @PostMapping("/login")
-    public ApplicationUserDTO login(@RequestBody ApplicationUserDTO userDTO) {
-        return applicationUserService.logIn(userDTO);
+    public ResponseEntity<?> login(@RequestBody ApplicationUserDTO userDTO) {
+        try {
+            ApplicationUserDTO toReturn = applicationUserService.logIn(userDTO);
+            return ResponseEntity.ok(toReturn);
+        } catch(IllegalArgumentException | NullPointerException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid parameters!");
+        }
     }
 
     @PostMapping("/restart")
-    public ApplicationUserDTO restart(@RequestBody ApplicationUserDTO userDTO) {
-        return applicationUserService.restart(userDTO);
+    public ResponseEntity<?> restart(@RequestBody ApplicationUserDTO userDTO) {
+        try{
+            ApplicationUserDTO toReturn = applicationUserService.restart(userDTO);
+            return ResponseEntity.ok(toReturn);
+        } catch(IllegalArgumentException | NullPointerException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid parameters!");
+        }
     }
 }

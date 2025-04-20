@@ -7,6 +7,8 @@ import com.cryptotrading.service.IApplicationUserService;
 import com.cryptotrading.service.impl.ApplicationUserServiceImpl;
 import com.cryptotrading.service.impl.KrakenSocketServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,30 +31,56 @@ public class ApplicationUserController {
     }
 
     @PostMapping("/buy")
-    public TransactionDTO buy(
+    public ResponseEntity<?> buy(
             @RequestBody ApplicationUserDTO userDTO,
             @RequestParam String symbol,
             @RequestParam BigDecimal quantity
     ) {
-        return applicationUserService.buy(userDTO, symbol, quantity);
+        try{
+            TransactionDTO toReturn = applicationUserService.buy(userDTO, symbol, quantity);
+            return ResponseEntity.ok(toReturn);
+        }catch(IllegalArgumentException | NullPointerException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid parameters!");
+        }catch(RuntimeException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+
     }
 
     @PostMapping("/sell")
-    public TransactionDTO sell(
+    public ResponseEntity<?> sell(
             @RequestBody ApplicationUserDTO userDTO,
             @RequestParam String symbol,
             @RequestParam BigDecimal quantity
     ) {
-        return applicationUserService.sell(userDTO, symbol, quantity);
+        try{
+            TransactionDTO toReturn = applicationUserService.sell(userDTO, symbol, quantity);
+            return ResponseEntity.ok(toReturn);
+        }catch(IllegalArgumentException | NullPointerException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid parameters!");
+        }catch (RuntimeException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+
     }
 
     @GetMapping("/transactions/{userId}")
-    public List<TransactionDTO> getPastTransactions(@PathVariable Long userId) {
-        return applicationUserService.getPastTransactions(userId);
+    public ResponseEntity<?> getPastTransactions(@PathVariable Long userId) {
+        try {
+            List<TransactionDTO> toReturn = applicationUserService.getPastTransactions(userId);
+            return ResponseEntity.ok(toReturn);
+        }catch (NullPointerException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid Parameters!");
+        }
     }
 
     @GetMapping("/portfolio/{userId}")
-    public List<ApplicationUserHoldingDTO> getUserPortfolio(@PathVariable Long userId){
-        return applicationUserService.getPortfolio(userId);
+    public ResponseEntity<?> getUserPortfolio(@PathVariable Long userId){
+        try{
+            List<ApplicationUserHoldingDTO> toReturn = applicationUserService.getPortfolio(userId);
+            return ResponseEntity.ok(toReturn);
+        }catch(IllegalArgumentException | NullPointerException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid parameters!");
+        }
     }
 }

@@ -83,7 +83,7 @@ public class KrakenSocketServiceImpl implements IKrakenSocketService {
 
                     @Override
                     public CompletionStage<?> onText(WebSocket webSocket, CharSequence data, boolean last) {
-                        log.info("📩 Received: {}", data);
+                        log.info("Received: {}", data);
 
                         try {
                             JsonNode node = objectMapper.readTree(data.toString());
@@ -107,7 +107,7 @@ public class KrakenSocketServiceImpl implements IKrakenSocketService {
                                 latestPrices.put(parsed.symbol(), parsed);
                             }
                         } catch (Exception e) {
-                            log.error("⚠️ Failed to parse ticker message", e);
+                            log.error("Failed to parse ticker message", e);
                         }
 
 
@@ -116,7 +116,7 @@ public class KrakenSocketServiceImpl implements IKrakenSocketService {
 
                     @Override
                     public void onError(WebSocket webSocket, Throwable error) {
-                        log.error("⚠️ WebSocket error: {}", error.getMessage(), error);
+                        log.error("WebSocket error: {}", error.getMessage(), error);
                     }
                 });
     }
